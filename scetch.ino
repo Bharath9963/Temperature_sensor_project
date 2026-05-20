@@ -1,4 +1,5 @@
 #include "sensor.h"
+#include "messenger.h"
 
 float temp_limit = 35.0;
 
@@ -18,7 +19,7 @@ int check_threshold(float temp, float limit)
 
 void alert()
 {
-    Serial.println("error : excceded threshold");
+    send_alert();
 }
 
 void print_config()
@@ -67,20 +68,18 @@ void user_can_change(String ch)
 
 void setup()
 {
-    Serial.begin(115200);
+    messenger_begin(115200);
 
     sensor_begin();
 
-    Serial.println("temperature monitoring");
+    send_log("temperature monitoring");
 }
 
 void loop()
 {
     float temp = temp_fromsensor();
 
-    Serial.print("temperature : ");
-    Serial.print(temp);
-    Serial.println(" C");
+    send_temp(temp);
 
     if(check_threshold(temp, temp_limit))
     {
